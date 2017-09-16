@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     var movieListType: String! = ""
     var movies:[Movie] = []
-
+    
     @IBOutlet weak var moviesTableView: UITableView!
     
     override func viewDidLoad() {
@@ -21,12 +22,23 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
         moviesTableView.delegate = self
         moviesTableView.dataSource = self
         
-        TheMovieDbApi.getNowPlaying(successCallback: {movies in
+        MBProgressHUD.showAdded(to: view, animated: true)
+        
+        let succesCallback: ([Movie])-> Void = {movies in
             self.movies = movies
             self.moviesTableView.reloadData()
-        }, errorCallback: {error in
+            MBProgressHUD.hide(for: self.view, animated: true)
+        }
+        
+        let errorCallback: (NSError?) -> Void = {error in
             
-        })
+        }
+        
+        if (movieListType == "now_playing") {
+            TheMovieDbApi.getNowPlaying(successCallback: succesCallback, errorCallback: errorCallback)
+        } else {
+            TheMovieDbApi.getTopRated(successCallback: succesCallback, errorCallback: errorCallback)
+        }
         
         // Do any additional setup after loading the view.
     }
@@ -43,21 +55,21 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
+    
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }
