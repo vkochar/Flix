@@ -21,6 +21,13 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <label key="tableHeaderView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Network error! Pull to refresh." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="FJn-6C-HRj">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="0.0"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="MovieCell" rowHeight="116" id="0CR-lB-bFJ" customClass="MovieCell" customModule="Flix" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="116"/>
@@ -63,6 +70,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Movies" id="fcg-WE-5RN"/>
                     <connections>
+                        <outlet property="errorLabel" destination="FJn-6C-HRj" id="8fj-Z1-fa8"/>
                         <outlet property="moviesTableView" destination="ifo-iA-jTp" id="TWO-vd-riw"/>
                     </connections>
                 </viewController>

@@ -15,18 +15,14 @@ private let baseUrl = "https://api.themoviedb.org/3/movie"
 
 class TheMovieDbApi {
     
-    class func getNowPlaying(successCallback: @escaping ([Movie]) -> Void, errorCallback: ((NSError?) -> Void)?) {
-        fetchMovies(url: "\(baseUrl)/now_playing", params: params, successCallback: successCallback, errorCallback: errorCallback)
-    }
-    
-    class func getTopRated(successCallback: @escaping ([Movie]) -> Void, errorCallback: ((NSError?) -> Void)?) {
-        fetchMovies(url: "\(baseUrl)/top_rated", params: params, successCallback:  successCallback, errorCallback:  errorCallback)
+    class func getMovies(_ movieListType: String, successCallback: @escaping ([Movie]) -> Void, errorCallback: ((NSError?) -> Void)?) {
+        fetchMovies(url: "\(baseUrl)/\(movieListType)", params: params, successCallback: successCallback, errorCallback: errorCallback)
     }
     
     private class func fetchMovies(url: String, params: [String:String], successCallback: @escaping ([Movie]) -> Void, errorCallback: ((NSError?) -> Void)?) {
         
         let manager = AFHTTPSessionManager()
-        
+        manager.requestSerializer.cachePolicy = NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData
         manager.get(url, parameters: params, progress: nil, success: { (operation, response) -> Void in
             if let response = response as? NSDictionary,
                 let results = response["results"] as? NSArray {

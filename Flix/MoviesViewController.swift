@@ -9,12 +9,16 @@
 import UIKit
 import MBProgressHUD
 
-class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
-    var movieListType: String! = ""
-    var movies:[Movie] = []
+class MoviesViewController: UIViewController {
     
     @IBOutlet weak var moviesTableView: UITableView!
+    @IBOutlet weak var errorLabel: UILabel!
+    
+    var movieListType: String!
+    var movies:[Movie] = []
+    
+    var succesCallback: (([Movie])-> Void)?
+    var errorCallback: ((NSError?) -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,45 +26,47 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
         moviesTableView.delegate = self
         moviesTableView.dataSource = self
         
-        MBProgressHUD.showAdded(to: view, animated: true)
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshControlAction(_:)), for: UIControlEvents.valueChanged)
         
-        let succesCallback: ([Movie])-> Void = {movies in
+        moviesTableView.insertSubview(refreshControl, at: 0)
+        
+        succesCallback = {movies in
+            self.showError(show: false)
             self.movies = movies
             self.moviesTableView.reloadData()
             MBProgressHUD.hide(for: self.view, animated: true)
+            refreshControl.endRefreshing()
         }
         
-        let errorCallback: (NSError?) -> Void = {error in
-            
+        errorCallback = {error in
+            self.movies.removeAll()
+            self.moviesTableView.reloadData()
+            MBProgressHUD.hide(for: self.view, animated: true)
+            self.showError(show: true)
+            refreshControl.endRefreshing()
         }
         
-        if (movieListType == "now_playing") {
-            TheMovieDbApi.getNowPlaying(successCallback: succesCallback, errorCallback: errorCallback)
+        MBProgressHUD.showAdded(to: view, animated: true)
+        TheMovieDbApi.getMovies(movieListType, successCallback: succesCallback!, errorCallback: errorCallback!)
+    }
+    
+    private func showError(show: Bool) {
+        if (show){
+            errorLabel.frame.size.height = 44
         } else {
-            TheMovieDbApi.getTopRated(successCallback: succesCallback, errorCallback: errorCallback)
+            errorLabel.frame.size.height = 0
         }
-        
-        // Do any additional setup after loading the view.
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return movies.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let movieCell = tableView.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath) as! MovieCell
-        let movie = movies[indexPath.row]
-        movieCell.set(movie: movie)
-        return movieCell
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func refreshControlAction(_ refreshControl: UIRefreshControl) {
+        self.showError(show: false)
+        TheMovieDbApi.getMovies(movieListType, successCallback: succesCallback!, errorCallback: errorCallback!)
     }
     
     
@@ -77,3 +83,22 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
     }
 }
+
+extension MoviesViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return movies.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let movieCell = tableView.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath) as! MovieCell
+        let movie = movies[indexPath.row]
+        movieCell.set(movie: movie)
+        return movieCell
+    }
+}
+
