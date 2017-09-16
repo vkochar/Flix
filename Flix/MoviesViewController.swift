@@ -11,8 +11,8 @@ import MBProgressHUD
 
 class MoviesViewController: UIViewController {
     
-    @IBOutlet weak var moviesTableView: UITableView!
     @IBOutlet weak var errorLabel: UILabel!
+    @IBOutlet weak var moviesCollectionView: UICollectionView!
     
     var movieListType: String!
     var movies:[Movie] = []
@@ -20,28 +20,37 @@ class MoviesViewController: UIViewController {
     var succesCallback: (([Movie])-> Void)?
     var errorCallback: ((NSError?) -> Void)?
     
+    var layout: UICollectionViewFlowLayout?
+    var isGrid: Bool = false
+    
+    let gridSize = CGSize(width: 187, height: 260)
+    let cellSize = CGSize(width: 375, height: 124)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        moviesTableView.delegate = self
-        moviesTableView.dataSource = self
+        moviesCollectionView.delegate = self
+        moviesCollectionView.dataSource = self
+        
+        layout = moviesCollectionView.collectionViewLayout as? UICollectionViewFlowLayout
+        layout!.itemSize = cellSize
         
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refreshControlAction(_:)), for: UIControlEvents.valueChanged)
         
-        moviesTableView.insertSubview(refreshControl, at: 0)
+        moviesCollectionView.insertSubview(refreshControl, at: 0)
         
         succesCallback = {movies in
             self.showError(show: false)
             self.movies = movies
-            self.moviesTableView.reloadData()
+            self.moviesCollectionView.reloadData()
             MBProgressHUD.hide(for: self.view, animated: true)
             refreshControl.endRefreshing()
         }
         
         errorCallback = {error in
             self.movies.removeAll()
-            self.moviesTableView.reloadData()
+            self.moviesCollectionView.reloadData()
             MBProgressHUD.hide(for: self.view, animated: true)
             self.showError(show: true)
             refreshControl.endRefreshing()
@@ -51,9 +60,25 @@ class MoviesViewController: UIViewController {
         TheMovieDbApi.getMovies(movieListType, successCallback: succesCallback!, errorCallback: errorCallback!)
     }
     
+    @IBAction func didClickChangeLayoutButton(_ sender: UIBarButtonItem) {
+        if (isGrid) {
+            layout!.itemSize = cellSize
+            sender.image = #imageLiteral(resourceName: "list")
+            //sender.setBackgroundImage(#imageLiteral(resourceName: "list"), for: UIControlState.normal, barMetrics: UIBarMetrics.default)
+        } else {
+            layout!.itemSize = gridSize
+            sender.image = #imageLiteral(resourceName: "grid")
+            //sender.setBackgroundImage(#imageLiteral(resourceName: "grid"), for: UIControlState.normal, barMetrics: UIBarMetrics.default)
+        }
+        isGrid = !isGrid
+        
+        moviesCollectionView.reloadData()
+    }
+    
     private func showError(show: Bool) {
+        // errorLabel.isHidden = !show
         if (show){
-            errorLabel.frame.size.height = 44
+            errorLabel.frame.size.height = 21
         } else {
             errorLabel.frame.size.height = 0
         }
@@ -74,8 +99,8 @@ class MoviesViewController: UIViewController {
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let cell = sender as! UITableViewCell
-        let indexPath = moviesTableView.indexPath(for: cell)
+        let cell = sender as! UICollectionViewCell
+        let indexPath = moviesCollectionView.indexPath(for: cell)
         let movie = movies[indexPath!.row]
         
         let detailViewController = segue.destination as! MovieDetailsViewController
@@ -84,21 +109,33 @@ class MoviesViewController: UIViewController {
     }
 }
 
-extension MoviesViewController: UITableViewDelegate, UITableViewDataSource {
+extension MoviesViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+        return 1
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return movies.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let movieCell = tableView.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath) as! MovieCell
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let movie = movies[indexPath.row]
-        movieCell.set(movie: movie)
-        return movieCell
+        
+        if(isGrid) {
+            let movieGrid = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieGrid", for: indexPath) as! MovieGrid
+            movieGrid.set(movie: movie)
+            return movieGrid
+        } else {
+            let movieCell = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieCell", for: indexPath) as! MovieCell
+            movieCell.set(movie: movie)
+            return movieCell
+        }
     }
 }
 

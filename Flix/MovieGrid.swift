@@ -1,27 +1,19 @@
 //
-//  MovieCell.swift
+//  MovieGrid.swift
 //  Flix
 //
-//  Created by Varun on 9/15/17.
+//  Created by Varun on 9/16/17.
 //  Copyright © 2017 Varun. All rights reserved.
 //
 
 import UIKit
 
-let imageBaseUrl = "https://image.tmdb.org/t/p/"
-
-class MovieCell: UICollectionViewCell {
-
+class MovieGrid: UICollectionViewCell {
+ 
     @IBOutlet weak var movieThumbnailView: UIImageView!
-    @IBOutlet weak var movieOverviewLabel: UILabel!
-    @IBOutlet weak var movieTitleView: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-        //layer.borderColor = UIColor.black.cgColor
-        //layer.borderWidth = 1
-        //layer.cornerRadius = 0
     }
     
     func set(movie: Movie) {
@@ -31,10 +23,5 @@ class MovieCell: UICollectionViewCell {
             let imageUrl = URL(string: "\(imageBaseUrl)/w185/\(imagePath)"){
             movieThumbnailView.setImageWith(imageUrl)
         }
-        
-        movieOverviewLabel.text = movie.overview
-        
-        movieTitleView.text = movie.title
     }
-
 }
