@@ -25,10 +25,11 @@ class MovieDetailsViewController: UIViewController {
         overviewLabel.text = movie.overview
         overviewLabel.sizeToFit()
         
-        let imagePath = movie.posterPath
-        if let imagePath = imagePath,
-            let imageUrl = URL(string: "\(imageBaseUrl)/w185/\(imagePath)"){
-            posterImageView.setImageWith(imageUrl)
+        if let imagePath = movie.posterPath {
+            let lowResImageUrlString = "\(imageBaseUrl)/w185/\(imagePath)"
+            let highResImageUrlString = "\(imageBaseUrl)/w500/\(imagePath)"
+            
+            posterImageView.setLowResAndHighResImage(lowResImageUrlString: lowResImageUrlString, highResImageUrlString: highResImageUrlString)
         }
         
         scrollView.contentSize = CGSize(width: scrollView.frame.size.width,

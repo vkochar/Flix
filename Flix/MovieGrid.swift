@@ -19,9 +19,8 @@ class MovieGrid: UICollectionViewCell {
     func set(movie: Movie) {
         let imagePath = movie.posterPath
         
-        if let imagePath = imagePath,
-            let imageUrl = URL(string: "\(imageBaseUrl)/w185/\(imagePath)"){
-            movieThumbnailView.setImageWith(imageUrl)
+        if let imagePath = imagePath {
+            movieThumbnailView.setImageWithAnimation(imageUrlString: "\(imageBaseUrl)/w185/\(imagePath)")
         }
     }
 }
