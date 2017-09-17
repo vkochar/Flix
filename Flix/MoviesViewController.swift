@@ -78,7 +78,7 @@ class MoviesViewController: UIViewController {
     }
     
     private func showError(show: Bool) {
-        // errorLabel.isHidden = !show
+        errorLabel.isHidden = !show
         if (show){
             errorLabel.frame.size.height = 21
         } else {
