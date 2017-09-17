@@ -23,7 +23,7 @@ class MoviesViewController: UIViewController {
             _filteredMovieList = value
         }
         get {
-            if _filteredMovieList == nil {
+            if _filteredMovieList == nil || _filteredMovieList!.count == 0 {
                 return movies
             } else {
                 return _filteredMovieList!
@@ -68,6 +68,7 @@ class MoviesViewController: UIViewController {
         
         errorCallback = {error in
             self.movies.removeAll()
+            self.filteredMovieList.removeAll()
             self.moviesCollectionView.reloadData()
             MBProgressHUD.hide(for: self.view, animated: true)
             self.showError(show: true)
