@@ -11,8 +11,7 @@ import Foundation
 class Movie: NSObject {
     
     var title:String! // original_title
-    var posterPath: String! // poster_path
-    var backdropPath : String! // backdrop_path
+    var posterPath: String? // poster_path -- all movies might not have a poster
     var overview: String! // overview
     var releaseDate: String! // release_date
     
@@ -20,7 +19,6 @@ class Movie: NSObject {
         self.init()
         title = json.value(forKey:"original_title") as? String
         posterPath = json.value(forKey:"poster_path") as? String
-        backdropPath = json.value(forKey:"backdrop_path") as? String
         overview = json.value(forKey:"overview") as? String
         releaseDate = json.value(forKey:"release_date") as? String
     }

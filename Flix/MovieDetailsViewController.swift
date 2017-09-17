@@ -27,7 +27,7 @@ class MovieDetailsViewController: UIViewController {
         
         if let imagePath = movie.posterPath {
             let lowResImageUrlString = "\(imageBaseUrl)/w185/\(imagePath)"
-            let highResImageUrlString = "\(imageBaseUrl)/w500/\(imagePath)"
+            let highResImageUrlString = "\(imageBaseUrl)/original/\(imagePath)"
             
             posterImageView.setLowResAndHighResImage(lowResImageUrlString: lowResImageUrlString, highResImageUrlString: highResImageUrlString)
         }

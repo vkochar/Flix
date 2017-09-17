@@ -23,8 +23,8 @@ class MoviesViewController: UIViewController {
     var layout: UICollectionViewFlowLayout?
     var isGrid: Bool = false
     
-    let gridSize = CGSize(width: 187, height: 260)
-    let cellSize = CGSize(width: 375, height: 124)
+    let gridSize = CGSize(width: 187, height: 282)
+    let cellSize = CGSize(width: 375, height: 116)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +39,8 @@ class MoviesViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(refreshControlAction(_:)), for: UIControlEvents.valueChanged)
         
         moviesCollectionView.insertSubview(refreshControl, at: 0)
+        
+        showError(show: false)
         
         succesCallback = {movies in
             self.showError(show: false)
@@ -117,6 +119,17 @@ extension MoviesViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return movies.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath)
+        cell?.backgroundColor = UIColor.gray
+    }
+    
+    // change background color back when user releases touch
+    func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath)
+        cell?.backgroundColor = UIColor(red: 243/255, green: 188/255, blue: 97/255, alpha: 1)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

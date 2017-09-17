@@ -14,6 +14,7 @@ class MovieGrid: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        backgroundColor = UIColor(red: 240/255, green: 185/255, blue: 94/255, alpha: 1)
     }
     
     func set(movie: Movie) {

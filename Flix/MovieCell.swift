@@ -22,6 +22,8 @@ class MovieCell: UICollectionViewCell {
         //layer.borderColor = UIColor.black.cgColor
         //layer.borderWidth = 1
         //layer.cornerRadius = 0
+        
+        backgroundColor = UIColor(red: 240/255, green: 185/255, blue: 94/255, alpha: 1)
     }
     
     func set(movie: Movie) {
