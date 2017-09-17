@@ -43,4 +43,31 @@ class TheMovieDbApi {
         })
         
     }
+    
+    class func getVideos(forMovie id: NSNumber, successCallback: @escaping ([Video]) -> Void, errorCallback: ((NSError?) -> Void)?) {
+        
+        let url = "\(baseUrl)/\(id)/videos"
+        
+        let manager = AFHTTPSessionManager()
+        manager.requestSerializer.cachePolicy = NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData
+        manager.get(url, parameters: params, progress: nil, success: { (operation, response) -> Void in
+            if let response = response as? NSDictionary,
+                let results = response["results"] as? NSArray {
+                
+                var videos: [Video] = []
+                
+                for result in results {
+                    if let result = result as? NSDictionary {
+                        videos.append(Video(json:result))
+                    }
+                }
+                successCallback(videos)
+            }
+        },failure: { (operation, error) -> Void in
+            if let errorCallback = errorCallback {
+                errorCallback(error as NSError)
+            }
+        })
+
+    }
 }

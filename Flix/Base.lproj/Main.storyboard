@@ -149,6 +149,13 @@
                                     </view>
                                 </subviews>
                             </scrollView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="ySw-qF-hVl">
+                                <rect key="frame" x="162" y="308" width="50" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <segue destination="Lau-rN-O89" kind="push" id="6NQ-aY-RDo"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -156,6 +163,7 @@
                     <connections>
                         <outlet property="infoView" destination="QML-kk-Vr4" id="6Yp-U5-PM4"/>
                         <outlet property="overviewLabel" destination="A94-Yy-b7D" id="3ZT-xW-dfU"/>
+                        <outlet property="playButton" destination="ySw-qF-hVl" id="FPb-tp-bbC"/>
                         <outlet property="posterImageView" destination="GBt-zG-nlr" id="G5z-Cf-Gnv"/>
                         <outlet property="scrollView" destination="9Kj-hu-439" id="TmR-8L-QDh"/>
                         <outlet property="titleLabel" destination="Wfp-YS-0eL" id="82A-5H-C24"/>
@@ -164,6 +172,31 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SKk-xj-PT6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-881.5" y="32.5"/>
+        </scene>
+        <!--Trailer-->
+        <scene sceneID="2Ct-va-I5g">
+            <objects>
+                <viewController id="Lau-rN-O89" customClass="VideoViewController" customModule="Flix" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="rc7-B9-mUK">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" misplaced="YES" id="VUI-ks-und">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Trailer" id="RIC-5P-Efj"/>
+                    <connections>
+                        <outlet property="webView" destination="VUI-ks-und" id="KBJ-zK-qdp"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="X6m-EH-WXH" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-357.5" y="39.5"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="0Ar-lf-4wR">
