@@ -17,6 +17,20 @@ class MoviesViewController: UIViewController {
     var movieListType: String!
     var movies:[Movie] = []
     
+    var _filteredMovieList:[Movie]?
+    var filteredMovieList:[Movie] {
+        set(value) {
+            _filteredMovieList = value
+        }
+        get {
+            if _filteredMovieList == nil {
+                return movies
+            } else {
+                return _filteredMovieList!
+            }
+        }
+    }
+    
     var succesCallback: (([Movie])-> Void)?
     var errorCallback: ((NSError?) -> Void)?
     
@@ -28,6 +42,8 @@ class MoviesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        addSearchBar()
         
         moviesCollectionView.delegate = self
         moviesCollectionView.dataSource = self
@@ -60,6 +76,13 @@ class MoviesViewController: UIViewController {
         
         MBProgressHUD.showAdded(to: view, animated: true)
         TheMovieDbApi.getMovies(movieListType, successCallback: succesCallback!, errorCallback: errorCallback!)
+    }
+    
+    private func addSearchBar() {
+        let searchBar = UISearchBar()
+        navigationItem.titleView = searchBar
+        searchBar.placeholder = "Search"
+        searchBar.delegate = self
     }
     
     @IBAction func didClickChangeLayoutButton(_ sender: UIBarButtonItem) {
@@ -103,7 +126,7 @@ class MoviesViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let cell = sender as! UICollectionViewCell
         let indexPath = moviesCollectionView.indexPath(for: cell)
-        let movie = movies[indexPath!.row]
+        let movie = filteredMovieList[indexPath!.row]
         
         let detailViewController = segue.destination as! MovieDetailsViewController
         detailViewController.movie = movie
@@ -118,7 +141,7 @@ extension MoviesViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return movies.count
+        return filteredMovieList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
@@ -138,7 +161,7 @@ extension MoviesViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let movie = movies[indexPath.row]
+        let movie = filteredMovieList[indexPath.row]
         
         if(isGrid) {
             let movieGrid = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieGrid", for: indexPath) as! MovieGrid
@@ -149,6 +172,22 @@ extension MoviesViewController: UICollectionViewDelegate, UICollectionViewDataSo
             movieCell.set(movie: movie)
             return movieCell
         }
+    }
+}
+
+extension MoviesViewController: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if (searchText.isEmpty) {
+            filteredMovieList = movies
+        } else {
+            let searchTextLowercased = searchText.lowercased()
+            filteredMovieList = movies.filter { (movie: Movie) -> Bool in
+                return movie.title.lowercased().range(of: searchTextLowercased) != nil
+                    || movie.description.lowercased().range(of: searchTextLowercased) != nil
+            }
+        }
+        moviesCollectionView.reloadData()
     }
 }
 
